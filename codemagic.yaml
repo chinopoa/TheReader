@@ -46,9 +46,17 @@ workflows:
         script: |
           cd flutter_app
           flutter pub get
-      - name: Build iOS
+      - name: Build iOS IPA
         script: |
           cd flutter_app
-          flutter build ios --release --no-codesign
+          flutter build ipa --release --no-codesign --export-options-plist=/dev/null || flutter build ios --release --no-codesign
+      - name: Create unsigned IPA
+        script: |
+          cd flutter_app/build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r TheReader.ipa Payload
+          rm -rf Payload
     artifacts:
+      - flutter_app/build/ios/iphoneos/*.ipa
       - flutter_app/build/ios/iphoneos/*.app
