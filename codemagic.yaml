@@ -1,20 +1,40 @@
 workflows:
-  flutter-windows:
-    name: Flutter Windows Build
+  flutter-ios:
+    name: Flutter iOS Build
     max_build_duration: 60
     working_directory: flutter_app
+    instance_type: mac_mini_m2
     environment:
       flutter: stable
+      xcode: latest
+      cocoapods: default
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Build Windows
-        script: flutter build windows --release
+      - name: Install CocoaPods dependencies
+        script: cd ios && pod install
+      - name: Build iOS
+        script: flutter build ios --release --no-codesign
+      - name: Create unsigned IPA
+        script: |
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r TheReader.ipa Payload
+          rm -rf Payload
     artifacts:
-      - build/windows/x64/runner/Release/**
+      - build/ios/iphoneos/*.ipa
+      - build/ios/iphoneos/Runner.app
+    publishing:
+      email:
+        recipients:
+          - chinooknao@gmail.com
+        notify:
+          success: true
+          failure: true
 
   flutter-android:
-    name: Flutter Android Build
+    name: Flutter Android Build  
     max_build_duration: 60
     working_directory: flutter_app
     environment:
@@ -27,27 +47,10 @@ workflows:
         script: flutter build apk --release
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
-
-  flutter-ios:
-    name: Flutter iOS Build
-    max_build_duration: 60
-    working_directory: flutter_app
-    instance_type: mac_mini_m1
-    environment:
-      flutter: stable
-      xcode: latest
-    scripts:
-      - name: Get Flutter packages
-        script: flutter pub get
-      - name: Build iOS
-        script: flutter build ios --release --no-codesign
-      - name: Create unsigned IPA
-        script: |
-          cd build/ios/iphoneos
-          mkdir -p Payload
-          cp -r Runner.app Payload/
-          zip -r TheReader.ipa Payload
-          rm -rf Payload
-    artifacts:
-      - build/ios/iphoneos/*.ipa
-      - build/ios/iphoneos/*.app
+    publishing:
+      email:
+        recipients:
+          - chinooknao@gmail.com
+        notify:
+          success: true
+          failure: true
