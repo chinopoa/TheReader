@@ -405,7 +405,7 @@ class _MangaDetailScreenState extends ConsumerState<MangaDetailScreen> {
               
               try {
                 // Fetch chapter pages
-                final pages = await ref.read(mangaServiceProvider).getChapterPages(manga, chapter);
+                final pages = await ref.read(mangaServiceProvider).getChapterPages(chapter, manga);
                 
                 // Pre-cache all images
                 for (final pageUrl in pages) {
