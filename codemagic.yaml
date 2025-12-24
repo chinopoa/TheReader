@@ -2,61 +2,52 @@ workflows:
   flutter-windows:
     name: Flutter Windows Build
     max_build_duration: 60
+    working_directory: flutter_app
     environment:
       flutter: stable
     scripts:
       - name: Get Flutter packages
-        script: |
-          cd flutter_app
-          flutter pub get
+        script: flutter pub get
       - name: Build Windows
-        script: |
-          cd flutter_app
-          flutter build windows --release
+        script: flutter build windows --release
     artifacts:
-      - flutter_app/build/windows/x64/runner/Release/**
+      - build/windows/x64/runner/Release/**
 
   flutter-android:
     name: Flutter Android Build
     max_build_duration: 60
+    working_directory: flutter_app
     environment:
       flutter: stable
       java: 17
     scripts:
       - name: Get Flutter packages
-        script: |
-          cd flutter_app
-          flutter pub get
+        script: flutter pub get
       - name: Build APK
-        script: |
-          cd flutter_app
-          flutter build apk --release
+        script: flutter build apk --release
     artifacts:
-      - flutter_app/build/app/outputs/flutter-apk/app-release.apk
+      - build/app/outputs/flutter-apk/app-release.apk
 
   flutter-ios:
     name: Flutter iOS Build
     max_build_duration: 60
+    working_directory: flutter_app
     instance_type: mac_mini_m1
     environment:
       flutter: stable
       xcode: latest
     scripts:
       - name: Get Flutter packages
-        script: |
-          cd flutter_app
-          flutter pub get
-      - name: Build iOS IPA
-        script: |
-          cd flutter_app
-          flutter build ipa --release --no-codesign --export-options-plist=/dev/null || flutter build ios --release --no-codesign
+        script: flutter pub get
+      - name: Build iOS
+        script: flutter build ios --release --no-codesign
       - name: Create unsigned IPA
         script: |
-          cd flutter_app/build/ios/iphoneos
+          cd build/ios/iphoneos
           mkdir -p Payload
           cp -r Runner.app Payload/
           zip -r TheReader.ipa Payload
           rm -rf Payload
     artifacts:
-      - flutter_app/build/ios/iphoneos/*.ipa
-      - flutter_app/build/ios/iphoneos/*.app
+      - build/ios/iphoneos/*.ipa
+      - build/ios/iphoneos/*.app
