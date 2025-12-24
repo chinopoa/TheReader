@@ -1,0 +1,514 @@
+﻿{
+    "mangaSource": [
+        {
+            "lan": "English",
+            "websites": [
+            {
+                    "name": "mangapark",
+                    "tagsJlink": "http://m.imanga.co/mangapark/taglist.gz",
+                    "indexJlink": "http://m.imanga.co/mangapark/indexs_an.gz",
+                    "updateJlinkBase": "http://m.imanga.co/mangapark/updates_an/updates",
+                    "intro": "\thttps://mangapark.net/\n\t8,0000+ manga",
+                    "coverRef":"https://mangapark.net"
+                },
+            {
+                    "name":"mangakakalot",
+                    "tagsJlink": "http://k.imanga.co/mangakakalot/taglist_an.gz",
+                    "indexJlink": "http://k.imanga.co/mangakakalot/indexs.gz",
+                    "updateJlinkBase": "http://k.imanga.co/mangakakalot/updates_an/updates",
+                    "intro": "\thttp://mangakakalot.com/\n\t19000+, licensed manga are already removed",
+                    "coverRef":"https://mangapark.net",
+                    "ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36",
+                    "version":"7"
+                },{
+                    "name": "batoto",
+                    "tagsJlink": "http://h.imanga.co/batoto/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/batoto/indexs_an.gz",
+                    "updateJlinkBase": "http://h.imanga.co/batoto/updates_an/updates",
+                    "intro": "\thttps://bato.to/\n\t5,0000+ manga",
+                    "coverRef":"https://bato.to/"
+                },{
+                    "name": "mangabuddy",
+                    "tagsJlink": "http://h.imanga.co/mangabuddy/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/mangabuddy/indexs_an.gz",
+                    "updateJlinkBase": "http://h.imanga.co/mangabuddy/updates_an/updates",
+                    "intro": "\thttps://mangabuddy.com/\n\t2,0000+ manga",
+                    "coverRef":"https://mangabuddy.com/"
+                },
+            {
+                    "name": "mangahub",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangahub/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangahub/indexs_an.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/mangahub/updates_an/updates",
+                    "intro": "\thttps://mangahub.io/\n\t20,000+ manga, licensed manga are already removed",
+                    "locked":"NO",
+                    "coverRef":"https://mangahub.io"
+                },{
+                    "name": "mangadex-en",
+                    "tagsJlink": "http://f.imanga.co/mangadex-en/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-en/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-en/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org/",
+                    "version":"1"
+                },{
+                    "name": "mangahasu",
+                    "tagsJlink": "http://k.imanga.co/mangahasu/taglist_an.gz",
+                    "indexJlink": "http://k.imanga.co/mangahasu/indexs_an.gz",
+                    "updateJlinkBase": "http://k.imanga.co/mangahasu/updates_an/updates",
+                    "intro": "\tRead your favorite mangas scans and scanlations online at MangaPark. Read Manga Online - Abdolutely Free, Updated Daily! \n\n\thttp://mangahasu.com/\n\t24,000+ manga",
+                    "locked":"NO",
+                    "coverRef":"http://mangahasu.se/"
+                },
+            {
+                    "name": "mangahere",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangahere/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangahere/indexs_an.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/mangahere/updates_an/updates",
+                    "intro": "\tBy number of manga titles, Mangahere is the biggest source available. The site boasts a very wide range of manga genres and types. Chances are: if you are looking for some manga, you can find them in Mangahere.com!\n\n\thttp://www.mangahere.com/\n\t12,000+ manga\n\tWarning: licensed manga are already removed",
+            "coverRef":"http://www.mangahere.cc",
+            "version":"2"
+                },{
+                    "name": "mangafox",
+                    "tagsJlink": "http://f.imanga.co/mangafox/taglist_an.gz",
+                    "indexJlink": "http://f.imanga.co/mangafox/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangafox/updates_an/updates",
+                    "intro": "\thttp://mangafox.me/\n\t19,000+ manga, the licensed manga are not available here",
+                    "coverRef":"http://fanfox.net",
+                    "version":"1"
+                },{
+                    "name": "readmangatoday",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/readmangatoday/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/readmangatoday/indexs_an.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/readmangatoday/updates_an/updates",
+                    "intro": "\t\n\n\thttp://www.readmanga.today/\n\t15,000+ manga",
+                    "coverRef":"https://www.funmanga.com",
+            "ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+                },{
+                    "name": "mangasee",
+                    "tagsJlink": "http://f.imanga.co/mangasee/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangasee/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangasee/updates_an/updates",
+                    "intro": "\thttps://mangas.com/\n\t5,000+ manga",
+                    "coverRef":"https://mangasee123.com/"
+                },{
+                    "name": "comicFree",
+                    "tagsJlink": "http://f.imanga.co/comicFree/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/comicFree/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/comicFree/updates/updates",
+                    "intro": "\thttps://readcomicsfree.com/\n\t20,000+ free comics",
+                    "coverRef":"https://readcomicsfree.com/",
+                    "version":"1"
+                },{
+                    "name": "comicsonline",
+                    "tagsJlink": "http://f.imanga.co/comicsonline/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/comicsonline/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/comicsonline/updates/updates",
+                    "intro": "\thttps://readcomicsonline.ru/\n\t5,000+ free comics",
+                    "coverRef":"https://readcomicsonline.ru/",
+                    "version":"1"
+                },{
+                    "name": "kissmanga",
+                    "tagsJlink": "http://f.imanga.co/kissmanga/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/kissmanga/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/kissmanga/updates/updates",
+                    "intro": "\thttp://kissmanga.org/\n\t19,000+ manga, the licensed manga are not available here",
+                    "coverRef":"http://fanfox.net"
+                },{
+                    "name": "topmanhua",
+                    "tagsJlink": "http://f.imanga.co/topmanhua/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/topmanhua/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/topmanhua/updates/updates",
+                    "intro": "\thttp://topmanhua.com/\n\t2,000+ manhua, the licensed manga are not available here",
+                    "coverRef":"https://manhuatop.org"
+                },{
+                    "name": "manhwa18",
+                    "tagsJlink": "http://f.imanga.co/manhwa18/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/manhwa18/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/manhwa18/updates/updates",
+                    "intro": "\thttp://manhwa18.com/\n\t700+ manhua, the licensed manga are not available here",
+                    "coverRef":"https://manhwa18.com"
+                },{
+                    "name": "9manga",
+                    "tagsJlink": "http://kmanga.oss-us-west-1.aliyuncs.com/9manga/taglist.gz",
+                    "indexJlink": "http://kmanga.oss-us-west-1.aliyuncs.com/9manga/indexs.gz",
+                    "updateJlinkBase": "http://kmanga.oss-us-west-1.aliyuncs.com/9manga/updates/updates",
+                    "intro": "\t\n\n\thttp://www.ninemanga.come/\n\t50,000+ manga",
+                    "coverRef":"https://www.ninemanga.com/",
+                    "ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+                },{
+                    "name": "muctau",
+                    "tagsJlink": "http://h.imanga.co/muctau/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/muctau/indexs_an.gz",
+                    "updateJlinkBase": "http://h.imanga.co/muctau/updates_an/updates",
+                    "intro": "\thttps://muctau.com/\n\t2,000+ webtoon",
+                    "coverRef":"https://muctau.com/"
+                },{
+                    "name": "mangareader",
+                    "tagsJlink": "http://f.imanga.co/mangafox/taglist_an.gz",
+                    "indexJlink": "http://f.imanga.co/mangafox/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangafox/updates/updates",
+                    "intro": "\thttp://mangafox.me/\n\t19,000+ manga, the licensed manga are not available here",
+                    "coverRef":"http://fanfox.net",
+                    "version":"1"
+                }
+            ]
+        },{
+            "lan": "18+",
+            "websites": [
+                {
+                    "name": "manytoon",
+                    "tagsJlink": "http://h.imanga.co/manytoon/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/manytoon/indexs.gz",
+                    "updateJlinkBase": "http://h.imanga.co/manytoon/updates/updates",
+                    "intro": "\thttps://manytoon.com/\n\t3,0000+ webtoon, hentai",
+                    "coverRef":"https://manytoon.com/"
+                }
+            ]
+        },
+        {
+            "lan": "العربية",
+            "websites": [
+            {
+                    "name": "mangalink",
+                    "tagsJlink": "http://h.imanga.co/mangalink/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/mangalink/indexs.gz",
+                    "updateJlinkBase": "http://h.imanga.co/mangalink/updates_an/updates",
+                    "intro": "\thttps://mangalink.io/\n\t4,500+ manga",
+                    "coverRef":"https://mangalink.io/"
+                },
+             {
+                    "name": "mangalek",
+                    "tagsJlink": "http://h.imanga.co/mangalek/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/mangalek/indexs_an.gz",
+                    "updateJlinkBase": "http://h.imanga.co/mangalek/updates_an/updates",
+                    "intro": "\thttps://mangalek.com/\n\t4,500+ manga",
+                    "coverRef":"https://mangalek.com/"
+                },
+            {
+                    "name": "mangadex-ar",
+                    "tagsJlink": "http://f.imanga.co/mangadex-ar/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-ar/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-ar/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },
+            {
+                    "name":"mangaaction",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangaaction/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangaaction/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/mangaaction/updates/updates",
+                    "intro": "\t\n\n\thttp://www.manga-action.com/\n\t140+ ",
+                    "coverRef":""
+                },{
+                    "name": "arabmanga",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/gmanga/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/gmanga/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/gmanga/updates/updates",
+                    "intro": "\t \n\n\thttp://www.3asq.info /\n\t200+ مانجا يابانية",
+                    "ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+                }
+            ]
+        },
+        {
+            "lan": "Bahasa Indonesia",
+            "websites": [
+                {
+                    "name": "komikid",
+                    "tagsJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/komikid/taglist.gz",
+                    "indexJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/komikid/indexs.gz",
+                    "updateJlinkBase": "http://hmanga.oss-cn-hongkong.aliyuncs.com/komikid/updates/updates",
+                    "intro": "\t \n\n\thttp://komikid.com/\n\t670+",
+            "coverRef":""
+                },
+                {
+                    "name": "pecintakomik",
+                    "tagsJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/pecintakomik/taglist.gz",
+                    "indexJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/pecintakomik/indexs.gz",
+                    "updateJlinkBase": "http://hmanga.oss-cn-hongkong.aliyuncs.com/pecintakomik/updates/updates",
+                    "intro": "\t \n\n\thttp://pecintakomik.com/\n\t500+",
+		    "coverRef":""
+                }
+            ]
+        },
+        {
+            "lan": "Español",
+            "websites": [
+            {
+                    "name": "mangadex-es",
+                    "tagsJlink": "http://f.imanga.co/mangadex-es/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-es/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-es/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },
+            {
+                    "name":"9manga_es",
+                    "tagsJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_es/taglist.gz",
+                    "indexJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_es/indexs.gz",
+                    "updateJlinkBase": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_es/updates/updates",
+                    "intro": "\t \n\n\thttp://es.ninemanga.com/\n\t8000+ ",
+            "coverRef":""
+                },
+            {
+                    "name":"submanga",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/submanga/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/submanga/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/submanga/updates/updates",
+                    "intro": "\t\n\n\thttp://www.submanga.online/\n\t1000+ ",
+                    "coverRef":""
+                },
+            {
+                    "name":"tumangaonline",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/tumangaonline/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/tumangaonline/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/tumangaonline/updates/updates",
+                    "intro": "\t\n\n\thttp://www.tumangaonline.com/\n\t8000+ ",
+            "coverRef":""
+                },
+            {
+                    "name":"mangadoor",
+                    "tagsJlink": "https://imanga.nyc3.digitaloceanspaces.com/mangadoor/taglist.gz",
+                    "indexJlink": "https://imanga.nyc3.digitaloceanspaces.com/mangadoor/indexs.gz",
+                    "updateJlinkBase": "https://imanga.nyc3.digitaloceanspaces.com/mangadoor/updates/updates",
+                    "intro": "\t\n\n\thttp://mangadoor.com/\n\t1500+ ",
+            "coverRef":""
+                }
+            ]
+        },
+        {
+            "lan": "italiano",
+            "websites": [
+            {
+                    "name": "mangadex-it",
+                    "tagsJlink": "http://f.imanga.co/mangadex-it/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-it/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-it/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },
+                {
+                    "name":"9manga-it",
+                    "tagsJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_it/taglist.gz",
+                    "indexJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_it/indexs.gz",
+                    "updateJlinkBase": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_it/updates/updates",
+                    "intro": "\t \n\n\thttp://it.ninemanga.com/\n\t1000+ ",
+            "coverRef":""
+                },
+                {
+                    "name": "mangaeden-it",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangaeden-it/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangaeden-it/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/mangaeden-it/updates/updates",
+                    "intro": "\tMangaEden is today one of the best sources where readers can access high-quality manga from leading publishers for free. Readers have access to a wide range of classic genres, summaries, manga art-books, and popular fiction and non-fiction manga-titles.\n\n\thttp://www.mangaeden.com\n\t1,000+ manga",
+		    "coverRef":"https://www.mangaeden.com",
+		    "version":"1",
+            "ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+                }
+            ]
+        },
+        {
+            "lan": "Tiếng Việt",
+            "websites": [
+                {
+                    "name":"blogtruyen",
+                    "tagsJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/blogtruyen/taglist.gz",
+                    "indexJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/blogtruyen/indexs.gz",
+                    "updateJlinkBase": "http://hmanga.oss-cn-hongkong.aliyuncs.com/blogtruyen/updates/updates",
+                    "intro": "\t \n\n\thttp://blogtruyen.com\n\t6000+ ",
+		    "coverRef":""
+                }
+            ]
+        },
+        {
+            "lan": "português",
+            "websites": [
+            {
+                    "name": "mangahost",
+                    "tagsJlink": "http://k.imanga.co/mangahost/taglist.gz",
+                    "indexJlink": "http://k.imanga.co/mangahost/indexs.gz",
+                    "updateJlinkBase": "http://k.imanga.co/mangahost/updates/updates",
+                    "intro": "\t \n\n\thttp://mangahost.cc\n\t3,000+ manga",
+                    "coverRef":"",
+                    "version":"2",
+                    "ua":"User-Agent,Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;"
+                },{
+                    "name": "lermanga",
+                    "tagsJlink": "http://h.imanga.co/lermanga/taglist.gz",
+                    "indexJlink": "http://h.imanga.co/lermanga/indexs.gz",
+                    "updateJlinkBase": "http://h.imanga.co/manytoon/updates/updates",
+                    "intro": "\thttps://lermanga.org/\n\t2,000+ manga",
+                    "coverRef":"https://lermanga.org/"
+                },{
+                    "name": "union",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/union/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/union/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/union/updates/updates",
+                    "intro": "\t \n\n\thttp://unionmangas.net\n\t4,000+ manga",
+                    "coverRef":"http://unionmangas.site"
+                },{
+                    "name": "mangadex-prc",
+                    "tagsJlink": "http://f.imanga.co/mangadex-prc/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-prc/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-prc/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },{
+                        "name": "supermanga",
+                        "tagsJlink": "http://f.imanga.co/supermanga/taglist.gz",
+                        "indexJlink": "http://f.imanga.co/supermanga/indexs.gz",
+                        "updateJlinkBase": "http://f.imanga.co/supermanga/updates/updates",
+                        "intro": "\t \n\n\thttps://supermanga.site\n\t1,700+ manga",
+                        "coverRef":"https://www.supermangas.site/"
+                    },{
+                    "name": "livre",
+                    "tagsJlink": "http://f.imanga.co/livre/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/livre/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/livre/updates/updates",
+                    "intro": "\t \n\n\thttps://mangalivre.net/\n\t1,000+ manga",
+                    "coverRef":"https://mangalivre.net/",
+                    "ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"
+                    },{
+                    "name": "centralde",
+                    "tagsJlink": "http://k.imanga.co/centralde/taglist.gz",
+                    "indexJlink": "http://k.imanga.co/centralde/indexs.gz",
+                    "updateJlinkBase": "http://k.imanga.co/centralde/updates/updates",
+                    "intro": "\t \n\n\thttp://centralde.com\n\t3,000+ manga",
+                    "coverRef":"http://centraldemangas.online/"
+                },  
+            {
+                    "name": "goldenmanga",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/goldenmanga/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/goldenmanga/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/goldenmanga/updates/updates",
+                    "intro": "\t \n\n\thttp://goldenmangas.site/\n\t4000+ "
+                },
+                {
+                    "name":"9manga-prc",
+                    "tagsJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_prc/taglist.gz",
+                    "indexJlink": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_prc/indexs.gz",
+                    "updateJlinkBase": "http://hmanga.oss-cn-hongkong.aliyuncs.com/9manga_prc/updates/updates",
+                    "intro": "\t \n\n\thttp://br.ninemanga.com/\n\t1000+ ",
+            "coverRef":""
+                }
+            ]
+        },
+        {
+            "lan": "русский",
+            "websites": [
+            {
+                    "name": "mangachan",
+                    "tagsJlink": "http://kmanga.oss-us-west-1.aliyuncs.com/mangachan/taglist.gz",
+                    "indexJlink": "http://kmanga.oss-us-west-1.aliyuncs.com/mangachan/indexs.gz",
+                    "updateJlinkBase": "http://kmanga.oss-us-west-1.aliyuncs.com/mangachan/updates/updates",
+                    "intro": "\t \n\n\thttp://mangachan.me/\n\t1000+ манги"
+                },{
+                    "name": "mangadex-ru",
+                    "tagsJlink": "http://f.imanga.co/mangadex-ru/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-ru/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-ru/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },{
+                    "name": "mangapoisk",
+                    "tagsJlink": "http://f.imanga.co/mangapoisk/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangapoisk/indexs.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangapoisk/updates/updates",
+                    "intro": "\thttps://mangapoisk.ru/\n\t5,000+ manga",
+                    "coverRef":"https://mangapoisk.ru"
+                },{
+                    "name": "yagami",
+                    "tagsJlink": "http://imanga.oss-cn-qingdao.aliyuncs.com/yagami/taglist.gz",
+                    "indexJlink": "http://imanga.oss-cn-qingdao.aliyuncs.com/yagami/indexs.gz",
+                    "updateJlinkBase": "http://imanga.oss-cn-qingdao.aliyuncs.com/yagami/updates/updates",
+                    "intro": "\t \n\n\thttp://read.yagami.men\t600+ манги"
+                }
+            ]
+        },{
+            "lan": "Français",
+            "websites": [
+            {
+                    "name": "mangadex-fr",
+                    "tagsJlink": "http://f.imanga.co/mangadex-fr/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-fr/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-fr/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },
+            {
+                    "name": "mangakawaii",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangakawaii/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/mangakawaii/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/mangakawaii/updates/updates",
+                    "intro": "\t \n\n\thttps://www.mangakawaii.to/\n\t4000+ "
+                },
+                {
+                    "name": "japscan",
+                    "tagsJlink": "https://imanga.nyc3.digitaloceanspaces.com/japscan/taglist.gz",
+                    "indexJlink": "https://imanga.nyc3.digitaloceanspaces.com/japscan/indexs.gz",
+                    "updateJlinkBase": "https://imanga.nyc3.digitaloceanspaces.com/japscan/updates/updates",
+                    "intro": "\t \n\n\thttps://www.japscan.com/\n\t2000+",
+            "coverRef":""
+                }
+            ]
+        },
+        {
+            "lan": "Deutsch",
+            "websites": [
+             {
+                    "name": "wiemanga",
+                    "tagsJlink": "https://s3-us-west-2.amazonaws.com/kmanga/wiemanga/taglist.gz",
+                    "indexJlink": "https://s3-us-west-2.amazonaws.com/kmanga/wiemanga/indexs.gz",
+                    "updateJlinkBase": "https://s3-us-west-2.amazonaws.com/kmanga/wiemanga/updates/updates",
+                    "intro": "\t \n\n\thttp://wiemanga.com\n\t4,000+ manga"
+                },
+            {
+                    "name": "mangadex-de",
+                    "tagsJlink": "http://f.imanga.co/mangadex-de/taglist.gz",
+                    "indexJlink": "http://f.imanga.co/mangadex-de/indexs_an.gz",
+                    "updateJlinkBase": "http://f.imanga.co/mangadex-de/updates_an/updates",
+                    "intro": "\t http://www.mangadex.org/\n\t12,000+ manga, the licensed manga are not available here",
+                    "locked":"NO",
+                    "coverRef":"https://mangadex.org",
+                    "version":"1"
+                },
+                {
+                    "name":"9manga-ge",
+                    "tagsJlink": "http://imanga.oss-cn-qingdao.aliyuncs.com/9manga_ge/taglist.gz",
+                    "indexJlink": "http://imanga.oss-cn-qingdao.aliyuncs.com/9manga_ge/indexs.gz",
+                    "updateJlinkBase": "http://imanga.oss-cn-qingdao.aliyuncs.com/9manga_ge/updates/updates",
+                    "intro": "\t \n\n\thttp://de.ninemanga.com/\n\t500+ ",
+		    "coverRef":""
+                }
+            ]
+        }
+    ],
+    "mangaRefer": "http://www.mangabirds.com",
+    "splashAd":"NO",
+    "notManga":"NO",
+    "is5Page":"NO",
+    "isAgeOn":"NO",
+    "splashAdUrl":"",
+    "mangaVersion":"1.30",
+    "keywordsJlink": "http://imanga.oss-cn-qingdao.aliyuncs.com/keywords.gz",
+    "lisensedJlink": "",
+    "userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36",
+    "fullAd1":"admob",
+    "fullAd2":"admob",
+    "rewardedAdsIsOn":"NO",
+    "PromotionCode":""
+}
+
