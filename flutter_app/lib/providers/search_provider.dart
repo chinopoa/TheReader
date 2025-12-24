@@ -30,8 +30,33 @@ final selectedSourceIdsProvider = StateProvider<Set<String>>(
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
+/// Live search input - updates as user types (for suggestions)
+final liveSearchInputProvider = StateProvider<String>((ref) => '');
+
 final isSearchingProvider = StateProvider<bool>((ref) => false);
 
+/// Quick search suggestions (max 15 results for speed)
+/// Uses already-cached indexes so it's instant
+final searchSuggestionsProvider = FutureProvider<List<Manga>>((ref) async {
+  final query = ref.watch(liveSearchInputProvider);
+  final sourceIds = ref.watch(selectedSourceIdsProvider);
+
+  // Only search if query is at least 2 characters
+  if (query.length < 2 || sourceIds.isEmpty) return [];
+
+  // Search first 2 sources for quick suggestions (prioritize speed)
+  final prioritySources = sourceIds.take(2).toList();
+  final futures = prioritySources.map((id) => 
+    ref.read(mangaServiceProvider).searchSource(query, id)
+  );
+  
+  final resultsList = await Future.wait(futures);
+  
+  // Flatten and limit to 15 for quick display
+  return resultsList.expand((x) => x).take(15).toList();
+});
+
+/// Full search results (all sources)
 final searchResultsProvider = FutureProvider<List<Manga>>((ref) async {
   final query = ref.watch(searchQueryProvider);
   final sourceIds = ref.watch(selectedSourceIdsProvider);

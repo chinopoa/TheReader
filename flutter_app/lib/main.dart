@@ -35,8 +35,8 @@ void main() async {
   await Hive.openBox<HistoryItem>('history');
   await Hive.openBox<RecentSearch>('recent_searches');
   await Hive.openBox('settings');
-  await Hive.openBox\u003cExtensionRepo\u003e('extension_repos');
-  await Hive.openBox\u003cInstalledSource\u003e('installed_sources');
+  await Hive.openBox<ExtensionRepo>('extension_repos');
+  await Hive.openBox<InstalledSource>('installed_sources');
 
   // NOTE: Removed database clearing - library data should persist!
   // If you need to reset, uncomment these lines temporarily:

@@ -116,6 +116,7 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
                           icon: const Icon(Icons.clear_rounded),
                           onPressed: () {
                             _searchController.clear();
+                            ref.read(liveSearchInputProvider.notifier).state = '';
                             if (_isSearchMode) _exitSearchMode();
                           },
                         ),
@@ -134,14 +135,21 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
                   ),
                 ),
                 onSubmitted: (_) => _performSearch(),
-                onChanged: (value) => setState(() {}),
+                onChanged: (value) {
+                  setState(() {});
+                  // Trigger live search suggestions as user types
+                  ref.read(liveSearchInputProvider.notifier).state = value;
+                },
               ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
           // Content based on state
-          if (_isSearchFocused && _searchController.text.isEmpty)
+          // Show quick suggestions when typing (before hitting Enter)
+          if (_isSearchFocused && _searchController.text.length >= 2 && !_isSearchMode)
+            _buildSearchSuggestions()
+          else if (_isSearchFocused && _searchController.text.isEmpty)
             _buildRecentSearches(recentSearches)
           else if (_isSearchMode)
             searchResults.when(
@@ -158,6 +166,106 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
 
           const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
         ],
+      ),
+    );
+  }
+  
+  /// Build search suggestions as user types
+  Widget _buildSearchSuggestions() {
+    final suggestionsAsync = ref.watch(searchSuggestionsProvider);
+    
+    return suggestionsAsync.when(
+      data: (suggestions) {
+        if (suggestions.isEmpty) {
+          return SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Center(
+                child: Text(
+                  'Type to search ${_searchController.text}...',
+                  style: TextStyle(color: context.secondaryTextColor),
+                ),
+              ),
+            ),
+          );
+        }
+        
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: Text(
+                    'SUGGESTIONS',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.secondaryTextColor,
+                    ),
+                  ),
+                );
+              }
+              
+              final manga = suggestions[index - 1];
+              return ListTile(
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: manga.coverUrl != null
+                      ? Image.network(
+                          manga.coverUrl!,
+                          width: 40,
+                          height: 56,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 40,
+                            height: 56,
+                            color: context.glassColor,
+                            child: const Icon(Icons.book, size: 20),
+                          ),
+                        )
+                      : Container(
+                          width: 40,
+                          height: 56,
+                          color: context.glassColor,
+                          child: const Icon(Icons.book, size: 20),
+                        ),
+                ),
+                title: Text(
+                  manga.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                  manga.author,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, color: context.secondaryTextColor),
+                ),
+                onTap: () {
+                  // Save and navigate to manga detail
+                  final mangaBox = ref.read(mangaBoxProvider);
+                  mangaBox.put(manga.id, manga);
+                  final encodedId = Uri.encodeComponent(manga.id);
+                  context.push('/library/manga/$encodedId');
+                },
+              );
+            },
+            childCount: suggestions.length + 1,
+          ),
+        );
+      },
+      loading: () => const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+      error: (e, _) => SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Center(child: Text('Error: $e')),
+        ),
       ),
     );
   }
