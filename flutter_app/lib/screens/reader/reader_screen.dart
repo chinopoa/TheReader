@@ -258,16 +258,11 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
   }
 
   Widget _buildWebtoonReader(List<String> pages) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final pageHeight = screenWidth * 1.5;
-    
     return ListView.builder(
       controller: _scrollController,
       itemCount: pages.length,
-      // Fixed height per item - better ListView performance
-      itemExtent: pageHeight,
       // Preload 3 pages ahead for smoother scrolling
-      cacheExtent: pageHeight * 3,
+      cacheExtent: MediaQuery.of(context).size.width * 4.5,
       itemBuilder: (context, index) {
         return _ChapterPage(
           imageUrl: pages[index],
@@ -538,66 +533,56 @@ class _ChapterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    // Fixed height prevents layout shifts - height is locked BEFORE image loads
-    // Manga pages: 1.4x width (typical manga ratio)
-    // Webtoon: 1.5x width (taller for vertical scroll comics)
-    final fixedHeight = screenWidth * (isWebtoon ? 1.5 : 1.4);
-    
-    return SizedBox(
-      width: screenWidth,
-      height: fixedHeight,
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        fit: BoxFit.contain, // Image fits inside fixed container
-        alignment: Alignment.center,
-        placeholder: (context, url) => Container(
-          color: Colors.grey[900],
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white38,
-                    strokeWidth: 2,
-                  ),
+    // Original MangaReader approach: fitWidth for webtoon fills screen width
+    // Images take their natural height - no fixed container needed
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: isWebtoon ? BoxFit.fitWidth : BoxFit.contain,
+      width: double.infinity, // Fill screen width
+      placeholder: (context, url) => Container(
+        height: isWebtoon ? MediaQuery.of(context).size.width * 1.5 : null,
+        color: Colors.grey[900],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(
+                color: Colors.white54,
+                strokeWidth: 2,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Loading page $pageNumber...',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  fontSize: 12,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Page $pageNumber',
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        errorWidget: (context, url, error) => Container(
-          color: Colors.grey[900],
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.broken_image_outlined,
-                  size: 40,
-                  color: Colors.white.withValues(alpha: 0.3),
+      ),
+      errorWidget: (context, url, error) => Container(
+        height: isWebtoon ? MediaQuery.of(context).size.width * 1.5 : null,
+        color: Colors.grey[900],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.broken_image_outlined,
+                size: 48,
+                color: Colors.white.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Failed to load page $pageNumber',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  fontSize: 12,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Page $pageNumber failed',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
