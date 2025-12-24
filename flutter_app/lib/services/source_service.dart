@@ -95,4 +95,18 @@ class SourceService {
   }
 
   List<BaseSource> getSources() => _sources.values.toList();
+  
+  /// Get all IManga sources (for preloading)
+  List<IMangaSource> getIMangaSources() => _imangaSources;
+  
+  /// Preload all IManga source indexes in background
+  /// Call this on app startup for instant search
+  Future<void> preloadAllIndexes() async {
+    print('SourceService: preloading all indexes in background...');
+    // Load in parallel for speed
+    await Future.wait(
+      _imangaSources.map((source) => source.preloadIndex()),
+    );
+    print('SourceService: all indexes preloaded!');
+  }
 }

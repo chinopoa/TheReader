@@ -24,12 +24,27 @@ class IMangaSource extends BaseSource {
   final String? coverReferer; // Referer header for cover images
   final String? userAgent;    // Custom user agent
   
-  // Cached manga list
+  // Cached manga list - kept in memory for instant search
   List<Manga>? _cachedMangaList;
   DateTime? _cacheTime;
-  static const _cacheDuration = Duration(hours: 1);
+  bool _isLoading = false;
+  static const _cacheDuration = Duration(hours: 24); // Cache for 24 hours like MangaReader
   
   final http.Client _client = http.Client();
+  
+  /// Check if index is already loaded in memory
+  bool get isIndexLoaded => _cachedMangaList != null;
+  
+  /// Preload the index in background (call on app startup)
+  Future<void> preloadIndex() async {
+    if (_cachedMangaList != null || _isLoading) return;
+    _isLoading = true;
+    try {
+      await _loadIndex();
+    } finally {
+      _isLoading = false;
+    }
+  }
   
   IMangaSource({
     required this.id,

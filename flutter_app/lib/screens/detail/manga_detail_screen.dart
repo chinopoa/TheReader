@@ -292,7 +292,15 @@ class _MangaDetailScreenState extends ConsumerState<MangaDetailScreen> {
           ),
           child: IconButton(
             onPressed: () {
+              // Save manga to Hive first if not already saved
+              final mangaBox = ref.read(mangaBoxProvider);
+              if (!mangaBox.containsKey(manga.id)) {
+                mangaBox.put(manga.id, manga);
+              }
+              // Now toggle follow
               ref.read(mangaNotifierProvider.notifier).toggleFollow(manga);
+              // Force rebuild to update icon
+              setState(() {});
             },
             icon: Icon(
               manga.isFollowed ? Icons.bookmark : Icons.bookmark_border,

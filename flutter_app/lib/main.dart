@@ -35,16 +35,14 @@ void main() async {
   await Hive.openBox<HistoryItem>('history');
   await Hive.openBox<RecentSearch>('recent_searches');
   await Hive.openBox('settings');
-  await Hive.openBox<ExtensionRepo>('extension_repos');
-  await Hive.openBox<InstalledSource>('installed_sources');
+  await Hive.openBox\u003cExtensionRepo\u003e('extension_repos');
+  await Hive.openBox\u003cInstalledSource\u003e('installed_sources');
 
-  // Clear old sample data - remove this after first run
-  await Hive.box<Manga>('manga').clear();
-  await Hive.box<Chapter>('chapters').clear();
-  await Hive.box<HistoryItem>('history').clear();
-
-  // Sample data seeder disabled - library starts empty
-  // await DataSeeder.seedIfNeeded();
+  // NOTE: Removed database clearing - library data should persist!
+  // If you need to reset, uncomment these lines temporarily:
+  // await Hive.box<Manga>('manga').clear();
+  // await Hive.box<Chapter>('chapters').clear();
+  // await Hive.box<HistoryItem>('history').clear();
 
   // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
