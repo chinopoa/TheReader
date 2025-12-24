@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:path_provider/path_provider.dart';
 import 'base_source.dart';
 import '../../models/manga.dart';
 import '../../models/chapter.dart';
@@ -103,17 +104,114 @@ class IMangaSource extends BaseSource {
     }
   }
   
-  /// Load the full manga index
+  /// Get the disk cache file path for this source's index
+  Future<String> _getDiskCachePath() async {
+    if (kIsWeb) return ''; // Web doesn't support disk caching
+    final dir = await getApplicationCacheDirectory();
+    return '${dir.path}/imanga_${id}_index.json';
+  }
+  
+  /// Load index from disk cache (INSTANT - no network!)
+  Future<List<Manga>?> _loadFromDisk() async {
+    if (kIsWeb) return null;
+    
+    try {
+      final path = await _getDiskCachePath();
+      final file = File(path);
+      
+      if (!await file.exists()) {
+        print('IManga [$name]: no disk cache found');
+        return null;
+      }
+      
+      // Check if cache is expired (7 days)
+      final stat = await file.stat();
+      final age = DateTime.now().difference(stat.modified);
+      if (age.inDays > 7) {
+        print('IManga [$name]: disk cache expired (${age.inDays} days old)');
+        return null;
+      }
+      
+      print('IManga [$name]: loading from disk cache...');
+      final jsonStr = await file.readAsString();
+      final data = json.decode(jsonStr) as List;
+      
+      final mangaList = _parseIndexData(data);
+      print('IManga [$name]: loaded ${mangaList.length} manga from disk (instant!)');
+      return mangaList;
+    } catch (e) {
+      print('IManga [$name]: disk cache error: $e');
+      return null;
+    }
+  }
+  
+  /// Save index to disk for instant loading next time
+  Future<void> _saveToDisk(List<dynamic> rawData) async {
+    if (kIsWeb) return;
+    
+    try {
+      final path = await _getDiskCachePath();
+      final file = File(path);
+      await file.writeAsString(json.encode(rawData));
+      print('IManga [$name]: saved ${rawData.length} items to disk cache');
+    } catch (e) {
+      print('IManga [$name]: failed to save disk cache: $e');
+    }
+  }
+  
+  /// Parse raw JSON data into Manga list
+  List<Manga> _parseIndexData(List<dynamic> data) {
+    final mangaList = <Manga>[];
+    
+    for (final item in data) {
+      if (item is! Map<String, dynamic>) continue;
+      
+      // Skip inactive manga
+      if (item['isOn'] == false) continue;
+      
+      final mangaName = item['name'] as String? ?? '';
+      if (mangaName.isEmpty) continue;
+      
+      // Extract ID from mJLink
+      final mJLink = item['mJLink'] as String? ?? '';
+      final mangaId = Uri.decodeComponent(
+        mJLink.split('/mangas/').last.replaceAll('/detail.gz', '')
+      );
+      
+      mangaList.add(Manga(
+        id: mangaId,
+        title: mangaName,
+        coverUrl: _proxyCoverUrl(item['cover'] as String? ?? ''),
+        author: (item['author'] as String?) ?? 'Unknown',
+        genres: (item['genres'] as String?)?.split(',').map((g) => g.trim()).toList() ?? [],
+        source: MangaSource.custom,
+        customSourceId: id,
+      ));
+    }
+    
+    return mangaList;
+  }
+  
+  /// Load the full manga index (disk-cached for instant search)
   Future<List<Manga>> _loadIndex() async {
-    // Check cache
+    // 1. Check memory cache (instant)
     if (_cachedMangaList != null && _cacheTime != null) {
       if (DateTime.now().difference(_cacheTime!) < _cacheDuration) {
-        print('IManga [$name]: using cached index (${_cachedMangaList!.length} items)');
+        print('IManga [$name]: using memory cache (${_cachedMangaList!.length} items)');
         return _cachedMangaList!;
       }
     }
     
-    print('IManga [$name]: loading index from $indexUrl');
+    // 2. Check disk cache (instant - no network!)
+    final diskData = await _loadFromDisk();
+    if (diskData != null) {
+      _cachedMangaList = diskData;
+      _cacheTime = DateTime.now();
+      return diskData;
+    }
+    
+    // 3. Download from network (slow, but only first time or when expired)
+    print('IManga [$name]: downloading index from network...');
     
     try {
       final data = await _fetchGzippedJson(indexUrl);
@@ -122,39 +220,16 @@ class IMangaSource extends BaseSource {
         throw Exception('Index is not a list');
       }
       
-      final mangaList = <Manga>[];
+      // Save to disk for next time
+      await _saveToDisk(data);
       
-      for (final item in data) {
-        if (item is! Map<String, dynamic>) continue;
-        
-        // Skip inactive manga
-        if (item['isOn'] == false) continue;
-        
-        final mangaName = item['name'] as String? ?? '';
-        if (mangaName.isEmpty) continue;
-        
-        // Extract ID from mJLink (e.g., "http://k.imanga.co/mangakakalot/mangas/Solo%20Leveling/detail.gz")
-        final mJLink = item['mJLink'] as String? ?? '';
-        final mangaId = Uri.decodeComponent(
-          mJLink.split('/mangas/').last.replaceAll('/detail.gz', '')
-        );
-        
-        mangaList.add(Manga(
-          id: mangaId,
-          title: mangaName,
-          coverUrl: _proxyCoverUrl(item['cover'] as String? ?? ''),
-          author: (item['author'] as String?) ?? 'Unknown',
-          genres: (item['genres'] as String?)?.split(',').map((g) => g.trim()).toList() ?? [],
-          source: MangaSource.custom,
-          customSourceId: id,
-        ));
-      }
+      final mangaList = _parseIndexData(data);
       
-      // Cache the result
+      // Cache the result in memory
       _cachedMangaList = mangaList;
       _cacheTime = DateTime.now();
       
-      print('IManga [$name]: loaded ${mangaList.length} manga');
+      print('IManga [$name]: loaded ${mangaList.length} manga from network');
       return mangaList;
     } catch (e) {
       print('IManga [$name]: failed to load index: $e');

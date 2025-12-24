@@ -11,7 +11,7 @@ import 'models/extension.dart';
 import 'providers/theme_provider.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
-import 'services/data_seeder.dart';
+import 'services/source_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +62,12 @@ class TheReaderApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final router = ref.watch(appRouterProvider);
+    
+    // Preload manga indexes in background for instant search
+    // Using addPostFrameCallback so it runs after first frame renders
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(sourceServiceProvider).preloadAllIndexes();
+    });
 
     return MaterialApp.router(
       title: 'TheReader',
