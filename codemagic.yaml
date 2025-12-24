@@ -13,9 +13,9 @@ workflows:
         script: flutter pub get
       - name: Install CocoaPods dependencies
         script: cd ios && pod install
-      - name: Build iOS for simulator (no code signing needed)
+      - name: Build iOS for simulator (debug mode)
         script: |
-          flutter build ios --simulator --release
+          flutter build ios --simulator --debug
       - name: Package simulator app
         script: |
           cd build/ios/iphonesimulator
