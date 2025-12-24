@@ -13,18 +13,16 @@ workflows:
         script: flutter pub get
       - name: Install CocoaPods dependencies
         script: cd ios && pod install
-      - name: Build iOS
-        script: flutter build ios --release --no-codesign
-      - name: Create unsigned IPA
+      - name: Build iOS for simulator (no code signing needed)
         script: |
-          cd build/ios/iphoneos
-          mkdir -p Payload
-          cp -r Runner.app Payload/
-          zip -r TheReader.ipa Payload
-          rm -rf Payload
+          flutter build ios --simulator --release
+      - name: Package simulator app
+        script: |
+          cd build/ios/iphonesimulator
+          zip -r TheReader-simulator.app.zip Runner.app
     artifacts:
-      - build/ios/iphoneos/*.ipa
-      - build/ios/iphoneos/Runner.app
+      - build/ios/iphonesimulator/*.zip
+      - build/ios/iphonesimulator/Runner.app
     publishing:
       email:
         recipients:
