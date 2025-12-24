@@ -68,7 +68,18 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
     final page = (_scrollController.offset / itemHeight).floor() + 1;
     if (page != _currentPage && page >= 1 && page <= _totalPages) {
       setState(() => _currentPage = page);
+      // Save progress every 5 pages for updating history
+      if (page % 5 == 0) {
+        _saveProgress();
+      }
     }
+  }
+  
+  @override
+  void deactivate() {
+    // Save reading progress when leaving the screen
+    _saveProgress();
+    super.deactivate();
   }
 
   @override
