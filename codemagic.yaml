@@ -1,0 +1,54 @@
+workflows:
+  flutter-windows:
+    name: Flutter Windows Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd flutter_app
+          flutter pub get
+      - name: Build Windows
+        script: |
+          cd flutter_app
+          flutter build windows --release
+    artifacts:
+      - flutter_app/build/windows/x64/runner/Release/**
+
+  flutter-android:
+    name: Flutter Android Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      java: 17
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd flutter_app
+          flutter pub get
+      - name: Build APK
+        script: |
+          cd flutter_app
+          flutter build apk --release
+    artifacts:
+      - flutter_app/build/app/outputs/flutter-apk/app-release.apk
+
+  flutter-ios:
+    name: Flutter iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd flutter_app
+          flutter pub get
+      - name: Build iOS
+        script: |
+          cd flutter_app
+          flutter build ios --release --no-codesign
+    artifacts:
+      - flutter_app/build/ios/iphoneos/*.app
