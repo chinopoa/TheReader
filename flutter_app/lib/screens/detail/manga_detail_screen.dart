@@ -394,7 +394,55 @@ class _MangaDetailScreenState extends ConsumerState<MangaDetailScreen> {
                final encodedChapterId = Uri.encodeComponent(chapter.id);
                context.push('/reader/$encodedMangaId/$encodedChapterId');
             },
-            onDownload: () {},
+            onDownload: () async {
+              // Show downloading snackbar
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Downloading ${chapter.displayTitle}...'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              
+              try {
+                // Fetch chapter pages
+                final pages = await ref.read(mangaServiceProvider).getChapterPages(manga, chapter);
+                
+                // Pre-cache all images
+                for (final pageUrl in pages) {
+                  await CachedNetworkImage.evictFromCache(pageUrl); // Clear old cache
+                  // Trigger download by getting the image
+                  await precacheImage(
+                    CachedNetworkImageProvider(pageUrl),
+                    context,
+                  );
+                }
+                
+                // Mark chapter as downloaded
+                chapter.isDownloaded = true;
+                chapter.save();
+                
+                // Refresh UI
+                ref.invalidate(mangaChaptersFetchProvider(manga.id));
+                
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Downloaded ${chapter.displayTitle} (${pages.length} pages)'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Download failed: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
           );
         },
         childCount: chapters.length,
