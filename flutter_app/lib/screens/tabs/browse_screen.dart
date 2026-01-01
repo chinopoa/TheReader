@@ -244,11 +244,9 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
                   style: TextStyle(fontSize: 12, color: context.secondaryTextColor),
                 ),
                 onTap: () {
-                  // Save and navigate to manga detail
-                  final mangaBox = ref.read(mangaBoxProvider);
-                  mangaBox.put(manga.id, manga);
-                  final encodedId = Uri.encodeComponent(manga.id);
-                  context.push('/library/manga/$encodedId');
+                  // Use the suggestion title as search query
+                  _searchController.text = manga.title;
+                  _performSearch();
                 },
               );
             },
