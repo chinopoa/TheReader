@@ -74,6 +74,38 @@ final searchResultsProvider = FutureProvider<List<Manga>>((ref) async {
   return resultsList.expand((x) => x).toList();
 });
 
+/// Search results organized BY SOURCE - each source has its own list
+final searchResultsBySourceProvider = FutureProvider<Map<String, List<Manga>>>((ref) async {
+  final query = ref.watch(searchQueryProvider);
+  final sourceIds = ref.watch(selectedSourceIdsProvider);
+
+  if (query.isEmpty || sourceIds.isEmpty) return {};
+
+  // Search all selected sources in parallel
+  final sourceIdList = sourceIds.toList();
+  final futures = sourceIdList.map((id) => 
+    ref.read(mangaServiceProvider).searchSource(query, id)
+  );
+  
+  final resultsList = await Future.wait(futures);
+  
+  // Create map of sourceId -> results
+  final Map<String, List<Manga>> bySource = {};
+  for (int i = 0; i < sourceIdList.length; i++) {
+    final results = resultsList[i];
+    if (results.isNotEmpty) {
+      bySource[sourceIdList[i]] = results;
+    }
+  }
+  
+  print('SearchBySource: ${bySource.length} sources have results');
+  for (final entry in bySource.entries) {
+    print('  ${entry.key}: ${entry.value.length} results');
+  }
+  
+  return bySource;
+});
+
 /// Normalize a title for comparison (lowercase, remove special characters)
 String _normalizeTitle(String title) {
   return title
