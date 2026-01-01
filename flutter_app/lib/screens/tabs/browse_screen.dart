@@ -26,7 +26,12 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
   void initState() {
     super.initState();
     _focusNode.addListener(() {
-      setState(() => _isSearchFocused = _focusNode.hasFocus);
+      // Delay the focus change handling to allow taps on suggestions to complete
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          setState(() => _isSearchFocused = _focusNode.hasFocus);
+        }
+      });
     });
   }
 
@@ -137,7 +142,12 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
                 ),
                 onSubmitted: (_) => _performSearch(),
                 onChanged: (value) {
-                  setState(() {});
+                  // Exit search mode when user types again (to show suggestions)
+                  if (_isSearchMode && value.isNotEmpty) {
+                    setState(() => _isSearchMode = false);
+                  } else {
+                    setState(() {});
+                  }
                   // Trigger live search suggestions as user types
                   ref.read(liveSearchInputProvider.notifier).state = value;
                 },
