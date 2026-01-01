@@ -895,10 +895,18 @@ class _HorizontalMangaCard extends StatelessWidget {
                         manga.coverUrl!,
                         fit: BoxFit.cover,
                         width: double.infinity,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: context.glassColor,
-                          child: const Icon(Icons.book, size: 40),
-                        ),
+                        headers: const {
+                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                          'Referer': 'https://mangapark.net/',
+                        },
+                        errorBuilder: (_, error, ___) {
+                          // Debug: Log the actual error
+                          print('Cover load failed for ${manga.title}: $error');
+                          return Container(
+                            color: context.glassColor,
+                            child: const Icon(Icons.book, size: 40),
+                          );
+                        },
                       )
                     : Container(
                         color: context.glassColor,

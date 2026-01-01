@@ -596,7 +596,14 @@ class _MangaGridItem extends StatelessWidget {
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
-                          errorBuilder: (_, __, ___) => _PlaceholderCover(),
+                          headers: const {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                            'Referer': 'https://mangapark.net/',
+                          },
+                          errorBuilder: (_, error, ___) {
+                            print('Cover error: $error');
+                            return _PlaceholderCover();
+                          },
                         )
                       : _PlaceholderCover(),
                 ),
