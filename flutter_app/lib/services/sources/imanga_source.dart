@@ -302,7 +302,15 @@ class IMangaSource extends BaseSource {
       return manga.title.toLowerCase().contains(queryLower);
     }).take(50).toList();
     
-    print('IManga [$name]: found ${results.length} results for "$query"');
+    // Debug: Log cover stats for search results
+    final withCovers = results.where((m) => m.coverUrl != null && m.coverUrl!.isNotEmpty).length;
+    print('IManga [$name]: found ${results.length} results for "$query" ($withCovers have covers)');
+    
+    // Print first 3 results with/without covers
+    for (int i = 0; i < results.length && i < 3; i++) {
+      final m = results[i];
+      print('  -> "${m.title}" cover: ${m.coverUrl?.isNotEmpty == true ? m.coverUrl!.substring(0, 50) + "..." : "MISSING"}');
+    }
     
     return results;
   }
