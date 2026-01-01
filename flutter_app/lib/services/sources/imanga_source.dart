@@ -253,15 +253,14 @@ class IMangaSource extends BaseSource {
     }
   }
   
-  /// Proxy cover URL to avoid CORS issues on web
+  /// Proxy cover URL through wsrv.nl for reliable loading
+  /// This bypasses CDN blocks (403) and handles caching (304) issues
   String _proxyCoverUrl(String url) {
     if (url.isEmpty) return '';
     
-    // Use wsrv.nl image proxy on web
-    if (kIsWeb) {
-      return 'https://wsrv.nl/?url=${Uri.encodeComponent(url)}';
-    }
-    return url;
+    // Use wsrv.nl image proxy for ALL platforms
+    // This fixes 503/403/304 errors from manga CDN servers
+    return 'https://wsrv.nl/?url=${Uri.encodeComponent(url)}&default=1';
   }
   
   @override

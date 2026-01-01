@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/manga.dart';
 import '../../providers/manga_provider.dart';
 import '../../services/manga_service.dart';
@@ -590,20 +591,19 @@ class _MangaGridItem extends StatelessWidget {
                 // Cover
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: manga.coverUrl != null
-                      ? Image.network(
-                          manga.coverUrl!,
+                  child: manga.coverUrl != null && manga.coverUrl!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: manga.coverUrl!,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
-                          headers: const {
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                            'Referer': 'https://mangapark.net/',
-                          },
-                          errorBuilder: (_, error, ___) {
-                            print('Cover error: $error');
-                            return _PlaceholderCover();
-                          },
+                          placeholder: (context, url) => Container(
+                            color: context.glassColor,
+                            child: const Center(
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => _PlaceholderCover(),
                         )
                       : _PlaceholderCover(),
                 ),

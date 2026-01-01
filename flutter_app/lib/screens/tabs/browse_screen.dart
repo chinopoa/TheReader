@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/chapter.dart';
 import '../../models/manga.dart';
 import '../../providers/search_provider.dart';
@@ -890,23 +891,25 @@ class _HorizontalMangaCard extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: manga.coverUrl != null
-                    ? Image.network(
-                        manga.coverUrl!,
+                child: manga.coverUrl != null && manga.coverUrl!.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: manga.coverUrl!,
                         fit: BoxFit.cover,
                         width: double.infinity,
-                        headers: const {
-                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                          'Referer': 'https://mangapark.net/',
-                        },
-                        errorBuilder: (_, error, ___) {
-                          // Debug: Log the actual error
-                          print('Cover load failed for ${manga.title}: $error');
-                          return Container(
-                            color: context.glassColor,
-                            child: const Icon(Icons.book, size: 40),
-                          );
-                        },
+                        placeholder: (context, url) => Container(
+                          color: context.glassColor,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: context.glassColor,
+                          child: const Icon(Icons.book, size: 40),
+                        ),
                       )
                     : Container(
                         color: context.glassColor,
