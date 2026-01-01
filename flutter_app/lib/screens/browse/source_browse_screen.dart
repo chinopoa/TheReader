@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/manga.dart';
 import '../../providers/manga_provider.dart';
+import '../../services/manga_service.dart';
 import '../../services/source_service.dart';
 import '../../services/sources/base_source.dart';
 import '../../theme/app_theme.dart';
@@ -34,6 +35,8 @@ class _SourceBrowseScreenState extends ConsumerState<SourceBrowseScreen>
   // Search state
   bool _isSearchMode = false;
   String _searchQuery = '';
+  List<Manga> _suggestions = [];
+  bool _showSuggestions = false;
 
   @override
   void initState() {
@@ -164,6 +167,8 @@ class _SourceBrowseScreenState extends ConsumerState<SourceBrowseScreen>
   void _toggleSearchMode() {
     setState(() {
       _isSearchMode = !_isSearchMode;
+      _suggestions = [];
+      _showSuggestions = false;
       if (!_isSearchMode) {
         // Exiting search mode - reload regular content
         _searchQuery = '';
@@ -176,6 +181,31 @@ class _SourceBrowseScreenState extends ConsumerState<SourceBrowseScreen>
     });
   }
   
+  /// Load search suggestions as user types
+  Future<void> _loadSuggestions(String query) async {
+    if (query.length < 2) {
+      setState(() {
+        _suggestions = [];
+        _showSuggestions = false;
+      });
+      return;
+    }
+    
+    try {
+      // Use manga service to search this specific source
+      final results = await ref.read(mangaServiceProvider).searchSource(query, widget.sourceId);
+      
+      if (mounted) {
+        setState(() {
+          _suggestions = results.take(10).toList(); // Limit to 10 suggestions
+          _showSuggestions = _suggestions.isNotEmpty;
+        });
+      }
+    } catch (e) {
+      print('Suggestion error: $e');
+    }
+  }
+  
   Future<void> _search(String query) async {
     if (query.trim().isEmpty) return;
     
@@ -184,6 +214,8 @@ class _SourceBrowseScreenState extends ConsumerState<SourceBrowseScreen>
       _error = null;
       _searchQuery = query;
       _mangaList = [];
+      _showSuggestions = false; // Hide suggestions when searching
+      _suggestions = [];
     });
 
     try {
@@ -245,7 +277,11 @@ class _SourceBrowseScreenState extends ConsumerState<SourceBrowseScreen>
                     border: InputBorder.none,
                     hintStyle: TextStyle(color: context.secondaryTextColor),
                   ),
-                  onSubmitted: _search,
+                  onChanged: _loadSuggestions,
+                  onSubmitted: (query) {
+                    _search(query);
+                    FocusScope.of(context).unfocus();
+                  },
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,7 +326,84 @@ class _SourceBrowseScreenState extends ConsumerState<SourceBrowseScreen>
             ),
           ),
         ],
-        body: _buildBody(followedIds),
+        body: Stack(
+          children: [
+            _buildBody(followedIds),
+            // Suggestions overlay
+            if (_showSuggestions && _suggestions.isNotEmpty && _isSearchMode)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Material(
+                  elevation: 4,
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 300),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _suggestions.length,
+                      itemBuilder: (context, index) {
+                        final manga = _suggestions[index];
+                        return MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTapDown: (_) {
+                              // Use the suggestion title as search query
+                              final title = manga.title;
+                              Future.microtask(() {
+                                _searchController.text = title;
+                                _search(title);
+                                FocusScope.of(context).unfocus();
+                              });
+                            },
+                            child: ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: manga.coverUrl != null
+                                    ? Image.network(
+                                        manga.coverUrl!,
+                                        width: 40,
+                                        height: 56,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => Container(
+                                          width: 40,
+                                          height: 56,
+                                          color: context.glassColor,
+                                          child: const Icon(Icons.book, size: 20),
+                                        ),
+                                      )
+                                    : Container(
+                                        width: 40,
+                                        height: 56,
+                                        color: context.glassColor,
+                                        child: const Icon(Icons.book, size: 20),
+                                      ),
+                              ),
+                              title: Text(
+                                manga.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                manga.author,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 12, color: context.secondaryTextColor),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
