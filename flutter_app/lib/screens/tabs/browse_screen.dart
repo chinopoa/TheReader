@@ -876,6 +876,9 @@ class _GroupedMangaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Debug print the cover URL
+    print('GroupedMangaCard: "${group.displayTitle}" coverUrl=${group.coverUrl}');
+    
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -884,24 +887,27 @@ class _GroupedMangaCard extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                // Cover image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: group.coverUrl != null
-                      ? Image.network(
-                          group.coverUrl!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                          errorBuilder: (_, __, ___) => Container(
+                // Cover image - fill the entire space
+                Positioned.fill(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: group.coverUrl != null && group.coverUrl!.isNotEmpty
+                        ? Image.network(
+                            group.coverUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, error, ___) {
+                              print('Image load error for ${group.displayTitle}: $error');
+                              return Container(
+                                color: context.glassColor,
+                                child: const Center(child: Icon(Icons.book, size: 40)),
+                              );
+                            },
+                          )
+                        : Container(
                             color: context.glassColor,
-                            child: const Icon(Icons.book, size: 40),
+                            child: const Center(child: Icon(Icons.book, size: 40)),
                           ),
-                        )
-                      : Container(
-                          color: context.glassColor,
-                          child: const Icon(Icons.book, size: 40),
-                        ),
+                  ),
                 ),
                 // Source count badge - always show for debugging
                 Positioned(

@@ -84,18 +84,12 @@ String _normalizeTitle(String title) {
 }
 
 /// Check if two normalized titles are similar enough to be grouped
+/// Only exact matches after normalization are considered the same
 bool _areTitlesSimilar(String title1, String title2) {
-  // Exact match after normalization
-  if (title1 == title2) return true;
-  
-  // One title contains the other (handles variations like "One Piece" vs "One Piece: Red")
-  if (title1.contains(title2) || title2.contains(title1)) {
-    // Only match if the shorter one is substantial (at least 5 chars)
-    final shorter = title1.length < title2.length ? title1 : title2;
-    if (shorter.length >= 5) return true;
-  }
-  
-  return false;
+  // Only group exact matches after normalization
+  // This means "One Piece" from MangaKakalot and "One Piece" from MangaPark will group
+  // But "One Piece" and "One Piece Party" will NOT group
+  return title1 == title2;
 }
 
 /// Represents a group of manga with similar titles from different sources
