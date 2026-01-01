@@ -125,6 +125,8 @@ class GroupedManga {
 final groupedSearchResultsProvider = FutureProvider<List<GroupedManga>>((ref) async {
   final results = await ref.watch(searchResultsProvider.future);
   
+  print('GroupedSearch: received ${results.length} total results');
+  
   if (results.isEmpty) return [];
   
   // Group by normalized title
@@ -145,20 +147,28 @@ final groupedSearchResultsProvider = FutureProvider<List<GroupedManga>>((ref) as
     
     if (matchingKey != null) {
       grouped[matchingKey]!.add(manga);
+      print('GroupedSearch: added "${manga.title}" to existing group "$matchingKey"');
     } else {
       grouped[normalizedTitle] = [manga];
-      titleDisplayMap[normalizedTitle] = manga.title; // Store first seen title as display
+      titleDisplayMap[normalizedTitle] = manga.title;
+      print('GroupedSearch: created new group "$normalizedTitle" for "${manga.title}"');
     }
   }
   
+  print('GroupedSearch: created ${grouped.length} groups from ${results.length} results');
+  
   // Convert to list of GroupedManga
-  return grouped.entries.map((entry) {
-    return GroupedManga(
+  final groupedList = grouped.entries.map((entry) {
+    final group = GroupedManga(
       displayTitle: titleDisplayMap[entry.key] ?? entry.value.first.title,
       coverUrl: GroupedManga._getBestCover(entry.value),
       sources: entry.value,
     );
+    print('GroupedSearch: group "${group.displayTitle}" has ${group.sources.length} sources');
+    return group;
   }).toList();
+  
+  return groupedList;
 });
 
 class SearchNotifier extends StateNotifier<void> {

@@ -448,28 +448,32 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
   }
 
   void _handleGroupedMangaTap(GroupedManga group, List<BaseSource> sources) {
+    print('Tap on grouped manga: "${group.displayTitle}" with ${group.sources.length} sources');
+    
     if (group.sources.length == 1) {
       // Single source - navigate directly
       final manga = group.sources.first;
+      print('Single source, navigating to: ${manga.id}');
       final mangaBox = ref.read(mangaBoxProvider);
       mangaBox.put(manga.id, manga);
       final encodedId = Uri.encodeComponent(manga.id);
       context.push('/library/manga/$encodedId');
     } else {
       // Multiple sources - show picker
+      print('Multiple sources, showing picker...');
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => _SourceSelectionSheet(
+        builder: (ctx) => _SourceSelectionSheet(
           group: group,
           sources: sources,
           onSourceSelected: (manga) {
-            Navigator.pop(context);
+            Navigator.pop(ctx);
             final mangaBox = ref.read(mangaBoxProvider);
             mangaBox.put(manga.id, manga);
             final encodedId = Uri.encodeComponent(manga.id);
-            this.context.push('/library/manga/$encodedId');
+            context.push('/library/manga/$encodedId');
           },
         ),
       );
@@ -899,33 +903,34 @@ class _GroupedMangaCard extends StatelessWidget {
                           child: const Icon(Icons.book, size: 40),
                         ),
                 ),
-                // Source count badge
-                if (group.sources.length > 1)
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        '${group.sources.length}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                // Source count badge - always show for debugging
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: group.sources.length > 1 
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 4,
                         ),
+                      ],
+                    ),
+                    child: Text(
+                      '${group.sources.length}',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
+                ),
               ],
             ),
           ),
