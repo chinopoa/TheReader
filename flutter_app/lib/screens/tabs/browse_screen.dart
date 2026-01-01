@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../models/chapter.dart';
 import '../../models/manga.dart';
 import '../../providers/search_provider.dart';
 import '../../providers/manga_provider.dart';
@@ -70,7 +71,7 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
   Widget build(BuildContext context) {
     final sources = ref.watch(sourceServiceProvider).getSources();
     final recentSearches = ref.watch(recentSearchesProvider);
-    final searchResults = ref.watch(searchResultsProvider);
+    final groupedResults = ref.watch(groupedSearchResultsProvider);
     final selectedSourceIds = ref.watch(selectedSourceIdsProvider);
 
     String searchHint = 'Search all sources...';
@@ -152,10 +153,10 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
           else if (_isSearchFocused && _searchController.text.isEmpty)
             _buildRecentSearches(recentSearches)
           else if (_isSearchMode)
-            searchResults.when(
+            groupedResults.when(
               data: (results) => results.isEmpty
                   ? _buildEmptySearchResults()
-                  : _buildSearchResultsBySource(results, sources),
+                  : _buildGroupedSearchResults(results, sources),
               loading: () => const SliverFillRemaining(
                 child: Center(child: CircularProgressIndicator()),
               ),
@@ -423,48 +424,58 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
     );
   }
 
-  Widget _buildSearchResultsBySource(List<Manga> results, List<BaseSource> sources) {
-    final groupedResults = <String, List<Manga>>{};
-
-    for (final manga in results) {
-      String sourceId = 'mangadex';
-      if (manga.source == MangaSource.custom) {
-        sourceId = manga.customSourceId ?? 'unknown';
-      } else if (manga.source == MangaSource.mangadex) {
-        sourceId = 'mangadex';
-      }
-
-      groupedResults.putIfAbsent(sourceId, () => []).add(manga);
-    }
-
-    final sourceIds = groupedResults.keys.toList();
-
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final sourceId = sourceIds[index];
-          final mangaList = groupedResults[sourceId]!;
-
-          final sourceName = sources.firstWhere(
-            (s) => s.id == sourceId,
-            orElse: () => sources.first
-          ).name;
-
-          return _SourceSection(
-            sourceName: sourceName,
-            mangaList: mangaList,
-            onMangaTap: (manga) {
-              final mangaBox = ref.read(mangaBoxProvider);
-              mangaBox.put(manga.id, manga);
-
-              final encodedId = Uri.encodeComponent(manga.id);
-              context.push('/library/manga/$encodedId');
-            },
-          );
-        },
-        childCount: groupedResults.length,
+  Widget _buildGroupedSearchResults(List<GroupedManga> results, List<BaseSource> sources) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      sliver: SliverGrid(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.55,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 12,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final group = results[index];
+            return _GroupedMangaCard(
+              group: group,
+              sources: sources,
+              onTap: () => _handleGroupedMangaTap(group, sources),
+            );
+          },
+          childCount: results.length,
+        ),
       ),
     );
+  }
+
+  void _handleGroupedMangaTap(GroupedManga group, List<BaseSource> sources) {
+    if (group.sources.length == 1) {
+      // Single source - navigate directly
+      final manga = group.sources.first;
+      final mangaBox = ref.read(mangaBoxProvider);
+      mangaBox.put(manga.id, manga);
+      final encodedId = Uri.encodeComponent(manga.id);
+      context.push('/library/manga/$encodedId');
+    } else {
+      // Multiple sources - show picker
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => _SourceSelectionSheet(
+          group: group,
+          sources: sources,
+          onSourceSelected: (manga) {
+            Navigator.pop(context);
+            final mangaBox = ref.read(mangaBoxProvider);
+            mangaBox.put(manga.id, manga);
+            final encodedId = Uri.encodeComponent(manga.id);
+            this.context.push('/library/manga/$encodedId');
+          },
+        ),
+      );
+    }
   }
 
   Widget _buildEmptySearchResults() {
@@ -833,6 +844,288 @@ class _HorizontalMangaCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Card for displaying a grouped manga result
+class _GroupedMangaCard extends StatelessWidget {
+  final GroupedManga group;
+  final List<BaseSource> sources;
+  final VoidCallback onTap;
+
+  const _GroupedMangaCard({
+    required this.group,
+    required this.sources,
+    required this.onTap,
+  });
+
+  String _getSourceName(Manga manga) {
+    if (manga.source == MangaSource.custom) {
+      final sourceId = manga.customSourceId ?? 'unknown';
+      return sources.firstWhere(
+        (s) => s.id == sourceId,
+        orElse: () => sources.isNotEmpty ? sources.first : _DummySource(),
+      ).name;
+    }
+    return 'MangaDex';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                // Cover image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: group.coverUrl != null
+                      ? Image.network(
+                          group.coverUrl!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: context.glassColor,
+                            child: const Icon(Icons.book, size: 40),
+                          ),
+                        )
+                      : Container(
+                          color: context.glassColor,
+                          child: const Icon(Icons.book, size: 40),
+                        ),
+                ),
+                // Source count badge
+                if (group.sources.length > 1)
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        '${group.sources.length}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            group.displayTitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: context.glassTextColor,
+            ),
+          ),
+          if (group.sources.length == 1)
+            Text(
+              _getSourceName(group.sources.first),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10,
+                color: context.secondaryTextColor,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Dummy source for fallback
+class _DummySource extends BaseSource {
+  @override
+  String get id => 'unknown';
+  @override
+  String get name => 'Unknown';
+  @override
+  String get baseUrl => '';
+  @override
+  Future<List<Manga>> search(String query) async => [];
+  @override
+  Future<List<Manga>> getPopular({int page = 1}) async => [];
+  @override
+  Future<List<Manga>> getLatest({int page = 1}) async => [];
+  @override
+  Future<Manga> getMangaDetails(String mangaId) async => throw UnimplementedError();
+  @override
+  Future<List<Chapter>> getChapters(String mangaId) async => [];
+  @override
+  Future<List<String>> getChapterPages(String chapterId) async => [];
+}
+
+/// Bottom sheet for selecting a source when multiple are available
+class _SourceSelectionSheet extends StatelessWidget {
+  final GroupedManga group;
+  final List<BaseSource> sources;
+  final void Function(Manga) onSourceSelected;
+
+  const _SourceSelectionSheet({
+    required this.group,
+    required this.sources,
+    required this.onSourceSelected,
+  });
+
+  String _getSourceName(Manga manga) {
+    if (manga.source == MangaSource.custom) {
+      final sourceId = manga.customSourceId ?? 'unknown';
+      return sources.firstWhere(
+        (s) => s.id == sourceId,
+        orElse: () => sources.isNotEmpty ? sources.first : _DummySource(),
+      ).name;
+    }
+    return 'MangaDex';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: context.secondaryTextColor.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: group.coverUrl != null
+                      ? Image.network(
+                          group.coverUrl!,
+                          width: 50,
+                          height: 70,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 50,
+                            height: 70,
+                            color: context.glassColor,
+                            child: const Icon(Icons.book),
+                          ),
+                        )
+                      : Container(
+                          width: 50,
+                          height: 70,
+                          color: context.glassColor,
+                          child: const Icon(Icons.book),
+                        ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        group.displayTitle,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Available from ${group.sources.length} sources',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: context.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          // Source list
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: group.sources.length,
+              itemBuilder: (context, index) {
+                final manga = group.sources[index];
+                final sourceName = _getSourceName(manga);
+                return ListTile(
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.public,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  title: Text(sourceName),
+                  subtitle: Text(
+                    manga.author.isNotEmpty ? manga.author : 'Unknown author',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: context.secondaryTextColor,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.chevron_right,
+                    color: context.secondaryTextColor,
+                  ),
+                  onTap: () => onSourceSelected(manga),
+                );
+              },
+            ),
+          ),
+          // Bottom padding for safe area
+          SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+        ],
       ),
     );
   }
