@@ -162,6 +162,8 @@ class IMangaSource extends BaseSource {
   /// Parse raw JSON data into Manga list
   List<Manga> _parseIndexData(List<dynamic> data) {
     final mangaList = <Manga>[];
+    int withCover = 0;
+    int withoutCover = 0;
     
     for (final item in data) {
       if (item is! Map<String, dynamic>) continue;
@@ -178,16 +180,30 @@ class IMangaSource extends BaseSource {
         mJLink.split('/mangas/').last.replaceAll('/detail.gz', '')
       );
       
+      // Debug: Check cover URL
+      final coverUrl = item['cover'] as String? ?? '';
+      if (coverUrl.isNotEmpty) {
+        withCover++;
+      } else {
+        withoutCover++;
+        // Log first few missing covers
+        if (withoutCover <= 5) {
+          print('IManga [$name]: missing cover for "$mangaName" - keys: ${item.keys.toList()}');
+        }
+      }
+      
       mangaList.add(Manga(
         id: mangaId,
         title: mangaName,
-        coverUrl: _proxyCoverUrl(item['cover'] as String? ?? ''),
+        coverUrl: _proxyCoverUrl(coverUrl),
         author: (item['author'] as String?) ?? 'Unknown',
         genres: (item['genres'] as String?)?.split(',').map((g) => g.trim()).toList() ?? [],
         source: MangaSource.custom,
         customSourceId: id,
       ));
     }
+    
+    print('IManga [$name]: parsed ${mangaList.length} manga - $withCover with covers, $withoutCover without covers');
     
     return mangaList;
   }
